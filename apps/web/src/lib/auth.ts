@@ -1,7 +1,6 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { eq } from "drizzle-orm";
-import { createDb, team, teamMember } from "@socialspark/db";
+import { createDb, eq, team, teamMember } from "@socialspark/db";
 
 let _auth: ReturnType<typeof betterAuth> | null = null;
 

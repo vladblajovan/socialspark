@@ -11,3 +11,4 @@ export type Database = ReturnType<typeof createDb>;
 
 export * from "./schema";
 export { schema };
+export { eq, and, or, desc, asc, sql } from "drizzle-orm";

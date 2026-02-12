@@ -9,6 +9,7 @@
     "migrate": "drizzle-kit migrate",
     "push": "drizzle-kit push",
     "studio": "drizzle-kit studio",
+    "lint": "eslint src/",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
