@@ -38,6 +38,7 @@ jobs:
       DATABASE_URL: "postgresql://dummy:dummy@localhost:5432/dummy"
       BETTER_AUTH_SECRET: "ci-dummy-secret-at-least-32-characters-long"
       BETTER_AUTH_URL: "http://localhost:3000"
+      ENCRYPTION_KEY: "ci-dummy-encryption-key-at-least-32chars"
     steps:
       - uses: actions/checkout@v4
 

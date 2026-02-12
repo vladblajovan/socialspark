@@ -60,7 +60,10 @@ export const serverEnvSchema = z.object({
   PINTEREST_APP_SECRET: z.string().optional().describe("Pinterest app secret"),
 
   // Encryption
-  ENCRYPTION_KEY: z.string().min(32).optional().describe("AES-256 key for encrypting OAuth tokens at rest"),
+  ENCRYPTION_KEY: z.string().min(32).describe("AES-256 key for encrypting OAuth tokens at rest"),
+
+  // Cron
+  CRON_SECRET: z.string().optional().describe("Secret for authenticating Vercel cron jobs"),
 
   // App
   NODE_ENV: z.enum(["development", "test", "production"]).default("development"),

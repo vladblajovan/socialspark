@@ -5,6 +5,7 @@ const validServerEnv = {
   DATABASE_URL: "postgresql://user:pass@host/db",
   BETTER_AUTH_SECRET: "a".repeat(32),
   BETTER_AUTH_URL: "http://localhost:3000",
+  ENCRYPTION_KEY: "b".repeat(32),
 };
 
 describe("serverEnvSchema", () => {

@@ -1,4 +1,5 @@
-import { pgTable, text, timestamp, boolean, index } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, boolean, index, uniqueIndex } from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm";
 import { team } from "./teams";
 
 export const platformAccount = pgTable(
@@ -26,5 +27,13 @@ export const platformAccount = pgTable(
   (table) => [
     index("idx_platform_accounts_team_id").on(table.teamId),
     index("idx_platform_accounts_platform").on(table.platform),
+    uniqueIndex("uq_platform_accounts_team_platform_user").on(
+      table.teamId,
+      table.platform,
+      table.platformUserId,
+    ),
+    index("idx_platform_accounts_token_expires")
+      .on(table.tokenExpiresAt)
+      .where(sql`is_active = true`),
   ]
 );

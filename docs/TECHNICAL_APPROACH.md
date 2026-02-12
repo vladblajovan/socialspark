@@ -3,7 +3,7 @@
 **Document Version**: 1.0
 **Date**: February 2026
 **Author**: SocialSpark Engineering
-**Status**: Phase 1 - In Progress (Week 3 complete)
+**Status**: Phase 2 - In Progress (Week 4 complete)
 
 ---
 
@@ -782,16 +782,16 @@ socialspark/
 
 #### Technical Tasks
 
-**Week 4: Platform OAuth & Account Management**
+**Week 4: Platform OAuth & Account Management** ✅
 - [ ] Set up Neon development branch (separate from production)
 - [ ] Configure Neon branching for Vercel preview deploys
-- [ ] Design and implement `platform_accounts` table (OAuth tokens, refresh tokens, profile data)
-- [ ] Implement token encryption at rest (AES-256-GCM via `packages/shared/utils/crypto.ts`)
-- [ ] Build OAuth connection flow for X (Twitter) API v2
-- [ ] Build OAuth connection flow for LinkedIn API
-- [ ] Build AT Protocol auth flow for Bluesky
-- [ ] Create platform accounts management page (connect, disconnect, status indicators)
-- [ ] Implement automatic token refresh logic (refresh before expiry)
+- [x] Design and implement `platform_accounts` table (OAuth tokens, refresh tokens, profile data)
+- [x] Implement token encryption at rest (AES-256-GCM via `packages/shared/utils/crypto.ts`)
+- [x] Build OAuth connection flow for X (Twitter) API v2
+- [x] Build OAuth connection flow for LinkedIn API
+- [x] Build AT Protocol auth flow for Bluesky
+- [x] Create platform accounts management page (connect, disconnect, status indicators)
+- [x] Implement automatic token refresh logic (refresh before expiry)
 
 **Week 5: Post Composer & Media Upload**
 - [ ] Design and implement `posts` and `post_platforms` tables
