@@ -38,3 +38,10 @@ export const listPostsQuerySchema = z.object({
 });
 
 export type ListPostsQuery = z.infer<typeof listPostsQuerySchema>;
+
+export const calendarPostsQuerySchema = z.object({
+  from: z.string().min(1),
+  to: z.string().min(1),
+});
+
+export type CalendarPostsQuery = z.infer<typeof calendarPostsQuerySchema>;

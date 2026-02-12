@@ -3,12 +3,13 @@ import { getDb } from "../lib/db";
 import { getRedis } from "../lib/redis";
 import { logger } from "../lib/logger";
 import { getEnv } from "../lib/env";
-import { post, postPlatform, platformAccount, eq, sql } from "@socialspark/db";
+import { post, postPlatform, platformAccount, team, user, eq, sql } from "@socialspark/db";
 import {
   decryptToken,
   getPublishingAdapter,
   PlatformPublishError,
 } from "@socialspark/shared";
+import { sendPublishFailureNotification } from "@socialspark/email/src/notifications";
 import type { Platform } from "@socialspark/shared";
 import type { PublishJobData } from "./scheduler";
 import { tryRefreshToken } from "./token-refresh-helper";
@@ -230,6 +231,52 @@ export function startPublisherWorker(): Worker {
 
       await updateParentPostStatus(data.postId);
       await moveToDeadLetter(data as unknown as Record<string, unknown>, err.message);
+
+      // Send email notification to team owner
+      try {
+        const db = getDb();
+        const [postRow] = await db
+          .select({ content: post.content, teamId: post.teamId })
+          .from(post)
+          .where(eq(post.id, data.postId))
+          .limit(1);
+
+        if (postRow) {
+          const [owner] = await db
+            .select({ email: user.email })
+            .from(team)
+            .innerJoin(user, eq(team.ownerId, user.id))
+            .where(eq(team.id, postRow.teamId))
+            .limit(1);
+
+          const [accountRow] = await db
+            .select({ platformUsername: platformAccount.platformUsername, platform: platformAccount.platform })
+            .from(platformAccount)
+            .where(eq(platformAccount.id, data.platformAccountId))
+            .limit(1);
+
+          if (owner) {
+            const dashboardUrl = process.env.BETTER_AUTH_URL ?? "https://socialspark.app";
+            await sendPublishFailureNotification({
+              to: owner.email,
+              postContent: postRow.content ?? "(no content)",
+              postId: data.postId,
+              platforms: [
+                {
+                  name: accountRow ? `${accountRow.platform} (${accountRow.platformUsername ?? "unknown"})` : "Unknown",
+                  error: err.message,
+                },
+              ],
+              dashboardUrl,
+            });
+          }
+        }
+      } catch (emailErr) {
+        logger.error("Failed to send publish failure email", {
+          postId: data.postId,
+          error: emailErr instanceof Error ? emailErr.message : String(emailErr),
+        });
+      }
     }
   });
 

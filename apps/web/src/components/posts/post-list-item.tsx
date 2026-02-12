@@ -21,8 +21,6 @@ import {
 } from "lucide-react";
 import type { Platform, PostStatus } from "@socialspark/shared";
 import { usePostMutations } from "@/hooks/use-post-mutations";
-import { useRouter } from "next/navigation";
-
 const STATUS_VARIANT: Record<PostStatus, "default" | "secondary" | "destructive" | "outline"> = {
   draft: "secondary",
   pending_approval: "outline",
@@ -68,7 +66,6 @@ interface PostListItemProps {
 }
 
 export function PostListItem({ post }: PostListItemProps) {
-  const router = useRouter();
   const { deletePost, publishNow, updatePost, loading } = usePostMutations();
 
   const status = post.status as PostStatus;

@@ -822,8 +822,8 @@ socialspark/
 - [ ] Implement drag-and-drop rescheduling on calendar
 - [ ] Build post list view with filters (draft, scheduled, published, failed)
 - [ ] Implement post editing for scheduled posts (updates the queued job)
-- [ ] Add email notification for failed posts (via Resend)
-- [ ] Write integration tests for publishing pipeline
+- [x] Add email notification for failed posts (via Resend) — Implemented with graceful skip; needs `RESEND_API_KEY` configured in production. Set up Resend account + verified domain before launch.
+- [x] Write integration tests for publishing pipeline (160 tests across 4 packages: shared 66, web 57, worker 26, email 11)
 - [ ] Load test the scheduler with 1000 concurrent scheduled posts
 
 #### Dependencies

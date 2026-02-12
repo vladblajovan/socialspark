@@ -9,6 +9,7 @@ const workerEnvSchema = z.object({
   TWITTER_CLIENT_SECRET: z.string().optional(),
   LINKEDIN_CLIENT_ID: z.string().optional(),
   LINKEDIN_CLIENT_SECRET: z.string().optional(),
+  RESEND_API_KEY: z.string().optional(),
   NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
 });
 

@@ -9,7 +9,7 @@ export const dynamic = "force-dynamic";
 
 type RouteParams = { params: Promise<{ postId: string }> };
 
-const SCHEDULABLE_STATUSES = ["draft", "approved", "changes_requested"];
+const SCHEDULABLE_STATUSES = ["draft", "approved", "changes_requested", "scheduled", "failed", "partially_published"];
 
 export async function POST(request: NextRequest, { params }: RouteParams) {
   try {

@@ -40,6 +40,7 @@ jobs:
       BETTER_AUTH_URL: "http://localhost:3000"
       ENCRYPTION_KEY: "ci-dummy-encryption-key-at-least-32chars"
       REDIS_URL: "redis://localhost:6379"
+      RESEND_API_KEY: ""
     steps:
       - uses: actions/checkout@v4
 
