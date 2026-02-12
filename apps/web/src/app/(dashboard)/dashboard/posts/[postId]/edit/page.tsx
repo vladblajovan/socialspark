@@ -1,6 +1,8 @@
 import { notFound } from "next/navigation";
 import { getDb } from "@/lib/db";
 import { getSessionOrThrow, getUserTeam } from "@/lib/session";
+
+export const dynamic = "force-dynamic";
 import {
   post,
   postPlatform,

@@ -3,6 +3,8 @@ import { getSessionOrThrow, getUserTeam } from "@/lib/session";
 import { platformAccount, eq, and } from "@socialspark/db";
 import { PostComposer } from "@/components/composer/post-composer";
 
+export const dynamic = "force-dynamic";
+
 export default async function NewPostPage() {
   const session = await getSessionOrThrow();
   const team = await getUserTeam(session.user.id);
