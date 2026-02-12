@@ -44,6 +44,32 @@ export const TEAM_ROLES = ["owner", "admin", "editor", "viewer"] as const;
 
 export type TeamRole = (typeof TEAM_ROLES)[number];
 
+export const PLATFORM_CHARACTER_LIMITS: Record<Platform, number> = {
+  twitter: 280,
+  linkedin: 3000,
+  bluesky: 300,
+  instagram: 2200,
+  facebook: 63206,
+  threads: 500,
+  pinterest: 500,
+  tiktok: 2200,
+  youtube: 5000,
+  mastodon: 500,
+};
+
+export const ALLOWED_MEDIA_TYPES = [
+  "image/jpeg",
+  "image/png",
+  "image/gif",
+  "image/webp",
+] as const;
+
+export type AllowedMediaType = (typeof ALLOWED_MEDIA_TYPES)[number];
+
+export const MAX_MEDIA_SIZE_BYTES = 10 * 1024 * 1024; // 10 MB
+
+export const MAX_MEDIA_PER_POST = 10;
+
 export const PLANS = ["free", "pro", "team"] as const;
 
 export type Plan = (typeof PLANS)[number];

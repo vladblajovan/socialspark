@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 const exactPublicPaths = new Set(["/", "/sign-in", "/sign-up", "/forgot-password", "/reset-password"]);
-const prefixPublicPaths = ["/api/auth", "/api/health", "/api/platforms", "/api/cron"];
+const prefixPublicPaths = ["/api/auth", "/api/health", "/api/platforms", "/api/cron", "/api/v1"];
 
 function isPublicPath(pathname: string): boolean {
   if (exactPublicPaths.has(pathname)) return true;

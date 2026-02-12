@@ -40,6 +40,9 @@ coverage/
 *.tsbuildinfo
 next-env.d.ts
 
+# Uploads (dev local storage)
+apps/web/public/uploads/
+
 # Misc
 *.pem
 *.log
