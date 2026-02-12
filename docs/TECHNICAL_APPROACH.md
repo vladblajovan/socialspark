@@ -783,6 +783,8 @@ socialspark/
 #### Technical Tasks
 
 **Week 4: Platform OAuth & Account Management**
+- [ ] Set up Neon development branch (separate from production)
+- [ ] Configure Neon branching for Vercel preview deploys
 - [ ] Design and implement `platform_accounts` table (OAuth tokens, refresh tokens, profile data)
 - [ ] Implement token encryption at rest (AES-256-GCM via `packages/shared/utils/crypto.ts`)
 - [ ] Build OAuth connection flow for X (Twitter) API v2
