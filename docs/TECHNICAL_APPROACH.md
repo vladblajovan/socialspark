@@ -746,13 +746,13 @@ socialspark/
 
 **Week 3: CI/CD & Infrastructure**
 - [x] GitHub Actions: lint, type-check, build, unit test on every PR
-- [ ] Configure Vercel project with environment variables
+- [x] Configure Vercel project with environment variables
 - [ ] Configure Railway project for worker (placeholder process)
 - [ ] Set up Neon branching for Vercel preview deploys
 - [x] Integrate Sentry for error tracking (`@sentry/nextjs`)
-- [ ] Set up Betterstack uptime monitor for production URL
+- [x] Set up Betterstack uptime monitor for production URL
 - [x] Write first unit tests for auth flow and shared validators
-- [ ] Deploy to production (empty dashboard, auth working)
+- [x] Deploy to production (empty dashboard, auth working)
 
 #### Dependencies
 - Neon database provisioned
