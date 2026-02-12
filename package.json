@@ -1,0 +1,26 @@
+{
+  "name": "socialspark",
+  "private": true,
+  "scripts": {
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "lint": "turbo lint",
+    "typecheck": "turbo typecheck",
+    "test": "turbo test",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md}\"",
+    "db:generate": "pnpm --filter @socialspark/db generate",
+    "db:migrate": "pnpm --filter @socialspark/db migrate",
+    "db:push": "pnpm --filter @socialspark/db push",
+    "db:studio": "pnpm --filter @socialspark/db studio",
+    "clean": "turbo clean && rm -rf node_modules"
+  },
+  "packageManager": "pnpm@9.15.4",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "devDependencies": {
+    "prettier": "^3.8.1",
+    "turbo": "^2.8.7"
+  }
+}
