@@ -2,12 +2,12 @@
 
 import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Save, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { TiptapEditor } from "./tiptap-editor";
 import { PlatformSelector, type PlatformAccount } from "./platform-selector";
 import { MediaUploadZone, type MediaItem } from "./media-upload-zone";
+import { PublishActions } from "./publish-actions";
 import { usePostMutations } from "@/hooks/use-post-mutations";
 import { useAutoSave } from "@/hooks/use-auto-save";
 
@@ -18,6 +18,7 @@ interface InitialPost {
   platforms: { platformAccountId: string }[];
   media: (MediaItem & { position: number })[];
   status: string;
+  scheduledAt?: Date | string | null;
 }
 
 interface PostComposerProps {
@@ -27,7 +28,7 @@ interface PostComposerProps {
 
 export function PostComposer({ accounts, initialPost }: PostComposerProps) {
   const router = useRouter();
-  const { createPost, updatePost, loading } = usePostMutations();
+  const { createPost, updatePost, schedulePost, publishNow, loading } = usePostMutations();
 
   const [postId, setPostId] = useState<string | null>(initialPost?.id ?? null);
   const [content, setContent] = useState(initialPost?.content ?? "");
@@ -42,6 +43,9 @@ export function PostComposer({ accounts, initialPost }: PostComposerProps) {
       storageUrl,
       mimeType,
     })) ?? []
+  );
+  const [scheduledAt, setScheduledAt] = useState<Date | null>(
+    initialPost?.scheduledAt ? new Date(initialPost.scheduledAt) : null,
   );
 
   const save = useCallback(async () => {
@@ -122,7 +126,6 @@ export function PostComposer({ accounts, initialPost }: PostComposerProps) {
     (mediaId: string) => {
       setMediaItems((prev) => prev.filter((m) => m.id !== mediaId));
       markDirty();
-      // Fire-and-forget delete from server
       fetch(`/api/v1/media/${mediaId}`, { method: "DELETE" }).catch(() => {});
     },
     [markDirty]
@@ -132,6 +135,37 @@ export function PostComposer({ accounts, initialPost }: PostComposerProps) {
     await saveNow();
     router.push("/dashboard/posts");
   }, [saveNow, router]);
+
+  const handleSchedule = useCallback(
+    async (date: Date) => {
+      // Ensure post is saved first
+      if (!postId) {
+        await saveNow();
+      }
+      // postId might have been set in save callback, but we need the current value
+      const id = postId;
+      if (!id) return;
+      await schedulePost(id, date);
+      setScheduledAt(date);
+    },
+    [postId, saveNow, schedulePost],
+  );
+
+  const handlePublishNow = useCallback(async () => {
+    if (!postId) {
+      await saveNow();
+    }
+    const id = postId;
+    if (!id) return;
+    await publishNow(id);
+    window.location.assign("/dashboard/posts");
+  }, [postId, saveNow, publishNow]);
+
+  const handleUnschedule = useCallback(async () => {
+    if (!postId) return;
+    await updatePost(postId, { status: "draft" });
+    setScheduledAt(null);
+  }, [postId, updatePost]);
 
   const canSave = content.trim().length > 0 && selectedPlatformIds.length > 0;
 
@@ -163,20 +197,18 @@ export function PostComposer({ accounts, initialPost }: PostComposerProps) {
           />
         </div>
 
-        {/* Save bar */}
+        {/* Publish actions */}
         <div className="space-y-3">
-          <Button
-            onClick={handleSaveDraft}
-            disabled={!canSave || loading}
-            className="w-full"
-          >
-            {loading ? (
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            ) : (
-              <Save className="mr-2 h-4 w-4" />
-            )}
-            Save Draft
-          </Button>
+          <PublishActions
+            postId={postId}
+            scheduledAt={scheduledAt}
+            canPublish={canSave}
+            loading={loading}
+            onSaveDraft={handleSaveDraft}
+            onSchedule={handleSchedule}
+            onPublishNow={handlePublishNow}
+            onUnschedule={handleUnschedule}
+          />
 
           <div className="flex items-center justify-center">
             <SaveStatusBadge status={saveStatus} />

@@ -6,3 +6,5 @@ export * from "./types/platform-oauth";
 export * from "./platforms/oauth-configs";
 export * from "./platforms/adapter";
 export * from "./validators/posts";
+export * from "./platforms/publishing-adapter";
+export * from "./platforms/publishers";

@@ -73,6 +73,7 @@ export default async function EditPostPage({ params }: Props) {
     content: found.content,
     contentHtml: found.contentHtml,
     status: found.status,
+    scheduledAt: found.scheduledAt,
     platforms,
     media: mediaItems,
   };

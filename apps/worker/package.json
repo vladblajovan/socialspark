@@ -12,7 +12,8 @@
     "@socialspark/db": "workspace:*",
     "@socialspark/shared": "workspace:*",
     "bullmq": "^5.0.0",
-    "ioredis": "^5.4.0"
+    "ioredis": "^5.4.0",
+    "zod": "^3.23.0"
   },
   "devDependencies": {
     "tsx": "^4.19.0",

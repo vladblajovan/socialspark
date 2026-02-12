@@ -55,6 +55,45 @@ export function usePostMutations() {
     []
   );
 
+  const schedulePost = useCallback(
+    async (postId: string, scheduledAt: Date) => {
+      setState({ loading: true, error: null });
+      try {
+        const res = await fetch(`/api/v1/posts/${postId}/schedule`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ scheduledAt: scheduledAt.toISOString() }),
+        });
+        const json = await res.json();
+        if (!res.ok) throw new Error(json.error || "Failed to schedule post");
+        setState({ loading: false, error: null });
+        return json.data;
+      } catch (err) {
+        const message = err instanceof Error ? err.message : "Failed to schedule post";
+        setState({ loading: false, error: message });
+        throw err;
+      }
+    },
+    [],
+  );
+
+  const publishNow = useCallback(async (postId: string) => {
+    setState({ loading: true, error: null });
+    try {
+      const res = await fetch(`/api/v1/posts/${postId}/publish-now`, {
+        method: "POST",
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || "Failed to publish post");
+      setState({ loading: false, error: null });
+      return json.data;
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Failed to publish post";
+      setState({ loading: false, error: message });
+      throw err;
+    }
+  }, []);
+
   const deletePost = useCallback(async (postId: string) => {
     setState({ loading: true, error: null });
     try {
@@ -72,5 +111,5 @@ export function usePostMutations() {
     }
   }, []);
 
-  return { ...state, createPost, updatePost, deletePost };
+  return { ...state, createPost, updatePost, deletePost, schedulePost, publishNow };
 }

@@ -39,6 +39,7 @@ jobs:
       BETTER_AUTH_SECRET: "ci-dummy-secret-at-least-32-characters-long"
       BETTER_AUTH_URL: "http://localhost:3000"
       ENCRYPTION_KEY: "ci-dummy-encryption-key-at-least-32chars"
+      REDIS_URL: "redis://localhost:6379"
     steps:
       - uses: actions/checkout@v4
 

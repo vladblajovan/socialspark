@@ -100,8 +100,8 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
     const found = await getPostForTeam(postId, team.teamId);
     if (!found) return apiError("Post not found", 404);
 
-    // Only draft and changes_requested posts can be edited
-    if (found.status !== "draft" && found.status !== "changes_requested") {
+    const EDITABLE_STATUSES = ["draft", "changes_requested", "scheduled", "failed", "partially_published"];
+    if (!EDITABLE_STATUSES.includes(found.status)) {
       return apiError("Post cannot be edited in its current status", 400);
     }
 
@@ -119,7 +119,17 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
     if (updates.contentHtml !== undefined) updateFields.contentHtml = updates.contentHtml;
     if (updates.scheduledAt !== undefined) updateFields.scheduledAt = updates.scheduledAt;
     if (updates.tags !== undefined) updateFields.tags = updates.tags;
-    if (updates.status !== undefined) updateFields.status = updates.status;
+    if (updates.status !== undefined) {
+      updateFields.status = updates.status;
+      // Unscheduling: reset postPlatform statuses when moving back to draft
+      if (updates.status === "draft" && (found.status === "scheduled" || found.status === "failed" || found.status === "partially_published")) {
+        updateFields.scheduledAt = null;
+        await db
+          .update(postPlatform)
+          .set({ status: "pending", errorMessage: null, retryCount: 0, updatedAt: new Date() })
+          .where(eq(postPlatform.postId, postId));
+      }
+    }
 
     const [updated] = await db
       .update(post)

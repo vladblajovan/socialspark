@@ -21,10 +21,14 @@ export const updatePostSchema = z.object({
   scheduledAt: z.coerce.date().nullable().optional(),
   tags: z.array(z.string().max(50)).max(20).optional(),
   mediaIds: z.array(z.string().uuid()).max(10).optional(),
-  status: z.enum(["draft", "pending_approval"]).optional(),
+  status: z.enum(["draft", "pending_approval", "scheduled"]).optional(),
 });
 
 export type UpdatePostInput = z.infer<typeof updatePostSchema>;
+
+export const schedulePostSchema = z.object({
+  scheduledAt: z.coerce.date(),
+});
 
 export const listPostsQuerySchema = z.object({
   status: z.enum(POST_STATUSES).optional(),

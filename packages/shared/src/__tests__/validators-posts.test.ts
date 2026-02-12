@@ -108,8 +108,14 @@ describe("updatePostSchema", () => {
       updatePostSchema.safeParse({ status: "published" }).success
     ).toBe(false);
     expect(
-      updatePostSchema.safeParse({ status: "scheduled" }).success
+      updatePostSchema.safeParse({ status: "failed" }).success
     ).toBe(false);
+  });
+
+  it("accepts scheduled as valid status", () => {
+    expect(
+      updatePostSchema.safeParse({ status: "scheduled" }).success
+    ).toBe(true);
   });
 
   it("accepts nullable scheduledAt", () => {

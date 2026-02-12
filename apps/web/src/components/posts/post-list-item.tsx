@@ -7,10 +7,18 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { PlatformIcon } from "@/components/platforms/platform-icons";
-import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import {
+  MoreHorizontal,
+  Pencil,
+  Trash2,
+  RefreshCw,
+  CalendarX,
+  Loader2,
+} from "lucide-react";
 import type { Platform, PostStatus } from "@socialspark/shared";
 import { usePostMutations } from "@/hooks/use-post-mutations";
 import { useRouter } from "next/navigation";
@@ -61,7 +69,7 @@ interface PostListItemProps {
 
 export function PostListItem({ post }: PostListItemProps) {
   const router = useRouter();
-  const { deletePost } = usePostMutations();
+  const { deletePost, publishNow, updatePost, loading } = usePostMutations();
 
   const status = post.status as PostStatus;
   const truncated =
@@ -77,14 +85,29 @@ export function PostListItem({ post }: PostListItemProps) {
   const handleDelete = async () => {
     if (!window.confirm("Delete this post?")) return;
     await deletePost(post.id);
-    router.refresh();
+    window.location.assign("/dashboard/posts");
   };
+
+  const handleRetry = async () => {
+    await publishNow(post.id);
+    window.location.assign("/dashboard/posts");
+  };
+
+  const handleUnschedule = async () => {
+    await updatePost(post.id, { status: "draft" });
+    window.location.assign("/dashboard/posts");
+  };
+
+  const isPublishing = status === "publishing";
+  const canRetry = status === "failed" || status === "partially_published";
+  const canUnschedule = status === "scheduled";
 
   return (
     <div className="flex items-start gap-4 rounded-lg border bg-card p-4">
       <div className="flex-1 min-w-0 space-y-1">
         <div className="flex items-center gap-2 flex-wrap">
           <Badge variant={STATUS_VARIANT[status]}>
+            {isPublishing && <Loader2 className="mr-1 h-3 w-3 animate-spin" />}
             {STATUS_LABELS[status] ?? status}
           </Badge>
           <div className="flex items-center gap-1">
@@ -118,6 +141,19 @@ export function PostListItem({ post }: PostListItemProps) {
               Edit
             </Link>
           </DropdownMenuItem>
+          {canRetry && (
+            <DropdownMenuItem onClick={handleRetry} disabled={loading}>
+              <RefreshCw className="mr-2 h-4 w-4" />
+              Retry
+            </DropdownMenuItem>
+          )}
+          {canUnschedule && (
+            <DropdownMenuItem onClick={handleUnschedule} disabled={loading}>
+              <CalendarX className="mr-2 h-4 w-4" />
+              Unschedule
+            </DropdownMenuItem>
+          )}
+          <DropdownMenuSeparator />
           <DropdownMenuItem
             onClick={handleDelete}
             className="text-destructive focus:text-destructive"

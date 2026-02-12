@@ -70,6 +70,9 @@ export const MAX_MEDIA_SIZE_BYTES = 10 * 1024 * 1024; // 10 MB
 
 export const MAX_MEDIA_PER_POST = 10;
 
+export const POST_PLATFORM_STATUSES = ["pending", "publishing", "published", "failed"] as const;
+export type PostPlatformStatus = (typeof POST_PLATFORM_STATUSES)[number];
+
 export const PLANS = ["free", "pro", "team"] as const;
 
 export type Plan = (typeof PLANS)[number];

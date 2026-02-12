@@ -3,7 +3,7 @@
 **Document Version**: 1.0
 **Date**: February 2026
 **Author**: SocialSpark Engineering
-**Status**: Phase 2 - In Progress (Week 4 complete)
+**Status**: Phase 2 - In Progress (Week 5 complete)
 
 ---
 
@@ -794,13 +794,17 @@ socialspark/
 - [x] Implement automatic token refresh logic (refresh before expiry)
 
 **Week 5: Post Composer & Media Upload**
-- [ ] Design and implement `posts` and `post_platforms` tables
-- [ ] Build post composer page with rich text editor (Tiptap or Lexical)
-- [ ] Implement platform-specific character count validation
-- [ ] Build media uploader (drag-and-drop, paste from clipboard)
-- [ ] Implement R2 presigned URL generation for direct browser uploads
+- [x] Design and implement `posts` and `post_platforms` tables (schema push to Neon)
+- [x] Build post composer page with rich text editor (Tiptap)
+- [x] Implement platform-specific character count validation (grapheme-aware for Bluesky)
+- [x] Build media uploader (drag-and-drop, paste from clipboard)
+- [ ] Implement R2 presigned URL generation for direct browser uploads (using local storage adapter for now)
 - [ ] Build platform preview panel (shows how post will look on each platform)
-- [ ] Implement draft saving (auto-save every 30 seconds)
+- [x] Implement draft saving (auto-save every 30 seconds)
+- [x] Build post CRUD API (REST at /api/v1/posts, /api/v1/media)
+- [x] Build posts list page with status filter, search, pagination
+- [x] Build post edit page
+- [x] Fix OAuth client baseURL for Vercel deployment
 
 **Week 6: Scheduling Engine**
 - [ ] Set up BullMQ with Upstash Redis in `apps/worker`
