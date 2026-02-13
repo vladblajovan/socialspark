@@ -818,13 +818,13 @@ socialspark/
 - [ ] Deploy worker to Railway with Betterstack heartbeat monitoring
 
 **Week 7: Calendar & Polish**
-- [ ] Build calendar view (month, week, day views) using a headless calendar library
-- [ ] Implement drag-and-drop rescheduling on calendar
-- [ ] Build post list view with filters (draft, scheduled, published, failed)
-- [ ] Implement post editing for scheduled posts (updates the queued job)
+- [x] Build calendar view (month, week, day views) using a headless calendar library
+- [x] Implement drag-and-drop rescheduling on calendar
+- [x] Build post list view with filters (draft, scheduled, published, failed)
+- [x] Implement post editing for scheduled posts (updates the queued job)
 - [x] Add email notification for failed posts (via Resend) — Implemented with graceful skip; needs `RESEND_API_KEY` configured in production. Set up Resend account + verified domain before launch.
 - [x] Write integration tests for publishing pipeline (160 tests across 4 packages: shared 66, web 57, worker 26, email 11)
-- [ ] Load test the scheduler with 1000 concurrent scheduled posts
+- [x] Load test the scheduler with 1000 concurrent scheduled posts (6 load tests: scheduler 3000 jobs in <5s, publisher 1000 jobs throughput, 10% failure handling, memory stability — 32 worker tests total)
 
 #### Dependencies
 - Phase 1 complete (auth, database, CI/CD)

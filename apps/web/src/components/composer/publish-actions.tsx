@@ -108,7 +108,7 @@ export function PublishActions({
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button disabled={!canPublish || !postId || loading} className="flex-1">
+            <Button disabled={!canPublish || loading} className="flex-1">
               {loading ? (
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               ) : (

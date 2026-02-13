@@ -99,7 +99,7 @@ describe("Scheduler Worker", () => {
         content: "Platform-specific content",
         hashtags: ["#test"],
       },
-      { jobId: "publish:pp-1" },
+      { jobId: "publish-pp-1" },
     );
   });
 
@@ -198,7 +198,7 @@ describe("Scheduler Worker", () => {
     expect(mockQueueAdd).toHaveBeenCalledWith(
       "publish",
       expect.any(Object),
-      { jobId: "publish:pp-1" },
+      { jobId: "publish-pp-1" },
     );
   });
 

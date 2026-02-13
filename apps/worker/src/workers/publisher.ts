@@ -109,15 +109,11 @@ async function processPublishJob(data: PublishJobData): Promise<void> {
     await updateParentPostStatus(data.postId);
   } catch (err) {
     if (err instanceof PlatformPublishError) {
-      // HTTP 400 — bad request, no retry
-      if (err.statusCode === 400) {
-        await markFailed(data, err.message);
-        await updateParentPostStatus(data.postId);
-        throw new UnrecoverableError(err.message);
-      }
-
-      // HTTP 401 — attempt token refresh
-      if (err.statusCode === 401) {
+      // HTTP 400/401 with expired/invalid token — attempt token refresh
+      if (
+        err.statusCode === 401 ||
+        (err.statusCode === 400 && err.message.toLowerCase().includes("expiredtoken"))
+      ) {
         const newToken = await tryRefreshToken(data.platformAccountId, platform);
         if (newToken) {
           // Retry with refreshed token
@@ -149,6 +145,13 @@ async function processPublishJob(data: PublishJobData): Promise<void> {
             // Token refresh didn't help, fall through to retry
           }
         }
+      }
+
+      // HTTP 400 — bad request, no retry (except expired token handled above)
+      if (err.statusCode === 400) {
+        await markFailed(data, err.message);
+        await updateParentPostStatus(data.postId);
+        throw new UnrecoverableError(err.message);
       }
 
       // HTTP 429 — rate limited

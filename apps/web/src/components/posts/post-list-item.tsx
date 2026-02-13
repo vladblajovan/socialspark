@@ -15,6 +15,8 @@ import {
   MoreHorizontal,
   Pencil,
   Trash2,
+  Send,
+  Clock,
   RefreshCw,
   CalendarX,
   Loader2,
@@ -85,7 +87,7 @@ export function PostListItem({ post }: PostListItemProps) {
     window.location.assign("/dashboard/posts");
   };
 
-  const handleRetry = async () => {
+  const handlePublishNow = async () => {
     await publishNow(post.id);
     window.location.assign("/dashboard/posts");
   };
@@ -96,7 +98,9 @@ export function PostListItem({ post }: PostListItemProps) {
   };
 
   const isPublishing = status === "publishing";
+  const canPublishNow = ["draft", "approved", "changes_requested"].includes(status);
   const canRetry = status === "failed" || status === "partially_published";
+  const canSchedule = ["draft", "approved", "changes_requested"].includes(status);
   const canUnschedule = status === "scheduled";
 
   return (
@@ -138,10 +142,24 @@ export function PostListItem({ post }: PostListItemProps) {
               Edit
             </Link>
           </DropdownMenuItem>
+          {canPublishNow && (
+            <DropdownMenuItem onClick={handlePublishNow} disabled={loading}>
+              <Send className="mr-2 h-4 w-4" />
+              Publish Now
+            </DropdownMenuItem>
+          )}
           {canRetry && (
-            <DropdownMenuItem onClick={handleRetry} disabled={loading}>
+            <DropdownMenuItem onClick={handlePublishNow} disabled={loading}>
               <RefreshCw className="mr-2 h-4 w-4" />
               Retry
+            </DropdownMenuItem>
+          )}
+          {canSchedule && (
+            <DropdownMenuItem asChild>
+              <Link href={`/dashboard/posts/${post.id}/edit`}>
+                <Clock className="mr-2 h-4 w-4" />
+                Schedule
+              </Link>
             </DropdownMenuItem>
           )}
           {canUnschedule && (

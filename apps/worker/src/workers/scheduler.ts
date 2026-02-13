@@ -57,7 +57,7 @@ async function scanAndEnqueue(): Promise<number> {
     };
 
     await publishingQueue.add("publish", jobData, {
-      jobId: `publish:${row.postPlatformId}`,
+      jobId: `publish-${row.postPlatformId}`,
     });
   }
 
@@ -81,13 +81,10 @@ export function startSchedulerWorker(): Worker {
   const schedulingQueue = getSchedulingQueue();
 
   // Add repeatable job that runs every 30 seconds
-  schedulingQueue.add(
-    "scan",
-    {},
-    {
-      repeat: { every: 30_000 },
-      jobId: "scheduler-scan",
-    },
+  schedulingQueue.upsertJobScheduler(
+    "scheduler-scan",
+    { every: 30_000 },
+    { name: "scan", data: {} },
   );
 
   const worker = new Worker(

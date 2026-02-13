@@ -48,8 +48,8 @@ export function PostComposer({ accounts, initialPost }: PostComposerProps) {
     initialPost?.scheduledAt ? new Date(initialPost.scheduledAt) : null,
   );
 
-  const save = useCallback(async () => {
-    if (!content.trim() || selectedPlatformIds.length === 0) return;
+  const save = useCallback(async (): Promise<string | null> => {
+    if (!content.trim() || selectedPlatformIds.length === 0) return null;
 
     const mediaIds = mediaItems.map((m) => m.id);
 
@@ -60,6 +60,7 @@ export function PostComposer({ accounts, initialPost }: PostComposerProps) {
         platformAccountIds: selectedPlatformIds,
         mediaIds,
       });
+      return postId;
     } else {
       const created = await createPost({
         content,
@@ -68,6 +69,7 @@ export function PostComposer({ accounts, initialPost }: PostComposerProps) {
         mediaIds,
       });
       setPostId(created.id);
+      return created.id;
     }
   }, [content, contentHtml, selectedPlatformIds, mediaItems, postId, createPost, updatePost]);
 
@@ -138,28 +140,20 @@ export function PostComposer({ accounts, initialPost }: PostComposerProps) {
 
   const handleSchedule = useCallback(
     async (date: Date) => {
-      // Ensure post is saved first
-      if (!postId) {
-        await saveNow();
-      }
-      // postId might have been set in save callback, but we need the current value
-      const id = postId;
+      const id = postId ?? await save();
       if (!id) return;
       await schedulePost(id, date);
       setScheduledAt(date);
     },
-    [postId, saveNow, schedulePost],
+    [postId, save, schedulePost],
   );
 
   const handlePublishNow = useCallback(async () => {
-    if (!postId) {
-      await saveNow();
-    }
-    const id = postId;
+    const id = postId ?? await save();
     if (!id) return;
     await publishNow(id);
     window.location.assign("/dashboard/posts");
-  }, [postId, saveNow, publishNow]);
+  }, [postId, save, publishNow]);
 
   const handleUnschedule = useCallback(async () => {
     if (!postId) return;
