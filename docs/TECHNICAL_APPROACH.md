@@ -3,7 +3,7 @@
 **Document Version**: 1.0
 **Date**: February 2026
 **Author**: SocialSpark Engineering
-**Status**: Phase 2 - In Progress (Week 5 complete)
+**Status**: Phase 2 - Complete (Week 7 done, landing page shipped)
 
 ---
 
@@ -793,7 +793,7 @@ socialspark/
 - [x] Create platform accounts management page (connect, disconnect, status indicators)
 - [x] Implement automatic token refresh logic (refresh before expiry)
 
-**Week 5: Post Composer & Media Upload**
+**Week 5: Post Composer & Media Upload** ✅
 - [x] Design and implement `posts` and `post_platforms` tables (schema push to Neon)
 - [x] Build post composer page with rich text editor (Tiptap)
 - [x] Implement platform-specific character count validation (grapheme-aware for Bluesky)
@@ -806,18 +806,18 @@ socialspark/
 - [x] Build post edit page
 - [x] Fix OAuth client baseURL for Vercel deployment
 
-**Week 6: Scheduling Engine**
-- [ ] Set up BullMQ with Upstash Redis in `apps/worker`
-- [ ] Implement scheduler worker (cron job every 30 seconds, scans for due posts)
-- [ ] Implement publisher worker with platform-specific publishing logic
-- [ ] Build platform API clients for X, LinkedIn, Bluesky (`apps/worker/src/platforms/`)
-- [ ] Implement retry logic with exponential backoff (1s, 5s, 30s, 2m, 10m)
-- [ ] Implement dead letter queue for permanently failed posts
-- [ ] Add scheduling UI: date picker, time picker, timezone selector
-- [ ] Implement "publish now" and "add to queue" options
+**Week 6: Scheduling Engine** ✅
+- [x] Set up BullMQ with Upstash Redis in `apps/worker`
+- [x] Implement scheduler worker (cron job every 30 seconds, scans for due posts)
+- [x] Implement publisher worker with platform-specific publishing logic
+- [x] Build platform API clients for X, LinkedIn, Bluesky (publishing adapters in `packages/shared`)
+- [x] Implement retry logic with exponential backoff (30s, 2m, 10m, 30m, 1h)
+- [x] Implement dead letter queue for permanently failed posts
+- [x] Add scheduling UI: date picker, time picker, timezone selector
+- [x] Implement "publish now" and "add to queue" options
 - [ ] Deploy worker to Railway with Betterstack heartbeat monitoring
 
-**Week 7: Calendar & Polish**
+**Week 7: Calendar & Polish** ✅
 - [x] Build calendar view (month, week, day views) using a headless calendar library
 - [x] Implement drag-and-drop rescheduling on calendar
 - [x] Build post list view with filters (draft, scheduled, published, failed)
@@ -825,6 +825,10 @@ socialspark/
 - [x] Add email notification for failed posts (via Resend) — Implemented with graceful skip; needs `RESEND_API_KEY` configured in production. Set up Resend account + verified domain before launch.
 - [x] Write integration tests for publishing pipeline (160 tests across 4 packages: shared 66, web 57, worker 26, email 11)
 - [x] Load test the scheduler with 1000 concurrent scheduled posts (6 load tests: scheduler 3000 jobs in <5s, publisher 1000 jobs throughput, 10% failure handling, memory stability — 32 worker tests total)
+- [x] BullMQ token refresh worker (every 2h, replaces Vercel cron)
+- [x] Bluesky token expiry tracking (tokenExpiresAt set on auth + refresh)
+- [x] Landing page with features grid, auth redirect, and /get-started page
+- [x] UI polish: auth branding, dashboard stat cards, sidebar transitions
 
 #### Dependencies
 - Phase 1 complete (auth, database, CI/CD)
@@ -1047,8 +1051,9 @@ socialspark/
 - [ ] Set up log drain from Vercel to Betterstack
 
 **Week 18: Launch**
-- [ ] Build landing page (marketing site): hero, features, pricing, FAQ
-  - Can be part of the Next.js app (public routes) or a separate Vercel project
+- [x] Build landing page (marketing site): hero, features, pricing, FAQ
+  - `/` landing page with hero + features, `/get-started` detailed product page,
+    `/pricing` with 3 tiers (Spark/Ignite/Blaze) + FAQ section
 - [ ] Set up PostHog for product analytics (sign-up funnel, feature usage)
 - [ ] Write user documentation: getting started guide, platform connection guides
 - [ ] Create feedback mechanism (in-app feedback widget or Canny board)

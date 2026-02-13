@@ -64,6 +64,9 @@ export default async function Home() {
           </Link>
           <nav className="flex items-center gap-3">
             <Button variant="ghost" asChild>
+              <Link href="/pricing">Pricing</Link>
+            </Button>
+            <Button variant="ghost" asChild>
               <Link href="/sign-in">Sign In</Link>
             </Button>
             <Button asChild>

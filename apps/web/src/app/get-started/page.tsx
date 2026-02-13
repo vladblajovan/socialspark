@@ -116,6 +116,9 @@ export default function GetStartedPage() {
           </Link>
           <nav className="flex items-center gap-3">
             <Button variant="ghost" asChild>
+              <Link href="/pricing">Pricing</Link>
+            </Button>
+            <Button variant="ghost" asChild>
               <Link href="/sign-in">Sign In</Link>
             </Button>
             <Button asChild>
@@ -289,6 +292,14 @@ export default function GetStartedPage() {
               </ul>
             </CardContent>
           </Card>
+          <div className="mt-6">
+            <Button variant="outline" asChild>
+              <Link href="/pricing">
+                View all plans & FAQ
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Link>
+            </Button>
+          </div>
         </div>
       </section>
 
