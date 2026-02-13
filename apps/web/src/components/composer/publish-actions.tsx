@@ -31,7 +31,7 @@ interface PublishActionsProps {
 }
 
 export function PublishActions({
-  postId,
+  postId: _postId,
   scheduledAt,
   canPublish,
   loading,
