@@ -55,6 +55,7 @@ export class BlueskyAdapter implements PlatformAdapter {
     return {
       accessToken: data.accessJwt,
       refreshToken: data.refreshJwt,
+      expiresIn: 2 * 60 * 60, // Bluesky access tokens expire after ~2 hours
     };
   }
 

@@ -1,5 +1,8 @@
+import { Worker } from "bullmq";
 import { getDb } from "../lib/db";
-import { platformAccount, eq } from "@socialspark/db";
+import { getRedis } from "../lib/redis";
+import { getTokenRefreshQueue } from "../queues";
+import { platformAccount, eq, and, sql } from "@socialspark/db";
 import { encryptToken, decryptToken } from "@socialspark/shared";
 import { logger } from "../lib/logger";
 import { getEnv } from "../lib/env";
@@ -94,7 +97,7 @@ async function refreshBlueskyToken(refreshToken: string): Promise<RefreshResult>
   return {
     accessToken: data.accessJwt,
     refreshToken: data.refreshJwt,
-    expiresIn: 2 * 60 * 60, // Bluesky access tokens expire after ~2 hours
+    expiresIn: 2 * 60 * 60,
   };
 }
 
@@ -104,59 +107,99 @@ const refreshers: Record<string, (refreshToken: string) => Promise<RefreshResult
   bluesky: refreshBlueskyToken,
 };
 
-/**
- * Attempts to refresh the access token for a platform account.
- * Returns the new decrypted access token on success.
- */
-export async function tryRefreshToken(accountId: string, platform: string): Promise<string | null> {
+async function refreshExpiringTokens(): Promise<{
+  total: number;
+  refreshed: number;
+  failed: number;
+}> {
   const db = getDb();
   const encryptionKey = getEnv().ENCRYPTION_KEY;
 
-  const [account] = await db
+  // Find active accounts with tokens expiring within 150 minutes (runs every 2h with overlap)
+  const expiringAccounts = await db
     .select()
     .from(platformAccount)
-    .where(eq(platformAccount.id, accountId))
-    .limit(1);
+    .where(
+      and(
+        eq(platformAccount.isActive, true),
+        sql`${platformAccount.tokenExpiresAt} IS NOT NULL`,
+        sql`${platformAccount.tokenExpiresAt} < NOW() + INTERVAL '150 minutes'`,
+        sql`${platformAccount.refreshTokenEnc} IS NOT NULL`,
+      ),
+    );
 
-  if (!account?.refreshTokenEnc) {
-    return null;
+  const result = { total: expiringAccounts.length, refreshed: 0, failed: 0 };
+
+  for (const account of expiringAccounts) {
+    const refresher = refreshers[account.platform];
+    if (!refresher) continue;
+
+    try {
+      const refreshToken = decryptToken(account.refreshTokenEnc!, encryptionKey);
+      const tokens = await refresher(refreshToken);
+
+      const newAccessTokenEnc = encryptToken(tokens.accessToken, encryptionKey);
+      const newRefreshTokenEnc = tokens.refreshToken
+        ? encryptToken(tokens.refreshToken, encryptionKey)
+        : account.refreshTokenEnc;
+      const newExpiresAt = tokens.expiresIn
+        ? new Date(Date.now() + tokens.expiresIn * 1000)
+        : null;
+
+      await db
+        .update(platformAccount)
+        .set({
+          accessTokenEnc: newAccessTokenEnc,
+          refreshTokenEnc: newRefreshTokenEnc,
+          tokenExpiresAt: newExpiresAt,
+          updatedAt: new Date(),
+        })
+        .where(eq(platformAccount.id, account.id));
+
+      result.refreshed++;
+      logger.info("Token refreshed", { accountId: account.id, platform: account.platform });
+    } catch (err) {
+      result.failed++;
+      logger.error("Token refresh failed", {
+        accountId: account.id,
+        platform: account.platform,
+        error: err instanceof Error ? err.message : "Unknown error",
+      });
+    }
   }
 
-  const refresher = refreshers[platform];
-  if (!refresher) {
-    return null;
-  }
+  return result;
+}
 
-  try {
-    const refreshToken = decryptToken(account.refreshTokenEnc, encryptionKey);
-    const result = await refresher(refreshToken);
+export function startTokenRefreshWorker(): Worker {
+  const queue = getTokenRefreshQueue();
 
-    const newAccessTokenEnc = encryptToken(result.accessToken, encryptionKey);
-    const newRefreshTokenEnc = result.refreshToken
-      ? encryptToken(result.refreshToken, encryptionKey)
-      : account.refreshTokenEnc;
-    const newExpiresAt = result.expiresIn
-      ? new Date(Date.now() + result.expiresIn * 1000)
-      : null;
+  // Run every 2 hours
+  queue.upsertJobScheduler(
+    "token-refresh-scan",
+    { every: 2 * 60 * 60 * 1000 },
+    { name: "refresh", data: {} },
+  );
 
-    await db
-      .update(platformAccount)
-      .set({
-        accessTokenEnc: newAccessTokenEnc,
-        refreshTokenEnc: newRefreshTokenEnc,
-        tokenExpiresAt: newExpiresAt,
-        updatedAt: new Date(),
-      })
-      .where(eq(platformAccount.id, accountId));
+  const worker = new Worker(
+    "token-refresh",
+    async () => {
+      const result = await refreshExpiringTokens();
+      logger.info("Token refresh scan complete", result);
+    },
+    {
+      connection: getRedis(),
+      concurrency: 1,
+    },
+  );
 
-    logger.info("Token refreshed successfully", { accountId, platform });
-    return result.accessToken;
-  } catch (err) {
-    logger.error("Token refresh failed", {
-      accountId,
-      platform,
-      error: err instanceof Error ? err.message : "Unknown error",
+  worker.on("failed", (job, err) => {
+    logger.error("Token refresh worker failed", {
+      jobId: job?.id,
+      error: err.message,
     });
-    return null;
-  }
+  });
+
+  logger.info("Token refresh worker started (2h interval)");
+  return worker;
 }

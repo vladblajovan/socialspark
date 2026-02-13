@@ -74,39 +74,51 @@ export default async function Home() {
       </header>
 
       {/* Hero */}
-      <section className="flex flex-1 flex-col items-center justify-center px-6 py-24 text-center">
-        <h1 className="max-w-3xl text-5xl font-bold tracking-tight sm:text-6xl">
+      <section className="flex flex-1 flex-col items-center justify-center px-6 py-32 text-center sm:py-40">
+        <div className="mb-4 inline-flex items-center gap-2 rounded-full border bg-muted/60 px-4 py-1.5 text-sm font-medium">
+          <Sparkles className="h-4 w-4" />
+          Optimized by AI
+        </div>
+        <h1 className="max-w-4xl text-4xl font-bold tracking-tight sm:text-6xl md:text-7xl">
           Write once.{" "}
           <span className="text-primary">Publish everywhere.</span>
         </h1>
-        <p className="mt-6 max-w-2xl text-lg text-muted-foreground">
-          The AI-native social media platform for creators and small teams.
+        <p className="mt-6 max-w-2xl text-base text-muted-foreground sm:text-lg md:text-xl">
           Create content once, let AI adapt it for every platform, and schedule
-          it all from one place.
+          it all from one place. Built for creators and small teams.
         </p>
-        <div className="mt-10 flex gap-4">
-          <Button size="lg" asChild>
-            <Link href="/sign-up">Get Started</Link>
+        <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:gap-4">
+          <Button size="lg" asChild className="text-base">
+            <Link href="/get-started">Get Started Free</Link>
           </Button>
-          <Button size="lg" variant="outline" asChild>
+          <Button size="lg" variant="outline" asChild className="text-base">
             <Link href="/sign-in">Sign In</Link>
           </Button>
         </div>
       </section>
 
       {/* Features */}
-      <section className="border-t bg-muted/40 px-6 py-20">
+      <section className="border-t bg-muted/40 px-6 py-24 sm:py-32">
         <div className="mx-auto max-w-6xl">
-          <h2 className="mb-12 text-center text-3xl font-bold tracking-tight">
-            Everything you need to grow your audience
-          </h2>
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mb-16 text-center">
+            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
+              Everything you need to grow your audience
+            </h2>
+            <p className="mt-4 text-base text-muted-foreground sm:text-lg">
+              All the tools to manage your social media presence in one place
+            </p>
+          </div>
+          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
             {features.map((feature) => (
-              <Card key={feature.title}>
-                <CardHeader>
-                  <feature.icon className="mb-2 h-8 w-8 text-primary" />
-                  <CardTitle className="text-lg">{feature.title}</CardTitle>
-                  <CardDescription>{feature.description}</CardDescription>
+              <Card key={feature.title} className="border-border/50">
+                <CardHeader className="space-y-4">
+                  <div className="inline-flex h-12 w-12 items-center justify-center rounded-lg bg-primary/5">
+                    <feature.icon className="h-6 w-6 text-primary" />
+                  </div>
+                  <CardTitle className="text-xl">{feature.title}</CardTitle>
+                  <CardDescription className="text-base leading-relaxed">
+                    {feature.description}
+                  </CardDescription>
                 </CardHeader>
               </Card>
             ))}
@@ -115,8 +127,19 @@ export default async function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t py-8 text-center text-sm text-muted-foreground">
-        &copy; {new Date().getFullYear()} SocialSpark. All rights reserved.
+      <footer className="border-t px-6 py-12">
+        <div className="mx-auto max-w-6xl">
+          <div className="flex flex-col items-center justify-between gap-6 sm:flex-row">
+            <div className="flex items-center gap-2 font-bold text-lg">
+              <Zap className="h-5 w-5 text-primary" />
+              SocialSpark
+            </div>
+            <p className="text-sm text-muted-foreground">
+              &copy; {new Date().getFullYear()} SocialSpark. All rights
+              reserved.
+            </p>
+          </div>
+        </div>
       </footer>
     </div>
   );

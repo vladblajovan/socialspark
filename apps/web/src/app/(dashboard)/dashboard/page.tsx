@@ -2,6 +2,15 @@ import { getDb } from "@/lib/db";
 import { getSessionOrThrow, getUserTeam } from "@/lib/session";
 import { post, platformAccount, eq, and, count, sql } from "@socialspark/db";
 import Link from "next/link";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { PenSquare, Calendar, Link as LinkIcon, Sparkles } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
@@ -44,33 +53,61 @@ export default async function DashboardPage() {
   const accounts = accountRows[0].total;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight">
+        <h1 className="text-3xl font-bold tracking-tight">
           Welcome back, {session.user.name?.split(" ")[0] ?? "there"}
         </h1>
-        <p className="text-muted-foreground">
+        <p className="mt-2 text-muted-foreground">
           Here&apos;s an overview of your social media activity.
         </p>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <StatCard title="Scheduled Posts" value={String(scheduled)} description="Posts ready to publish" />
-        <StatCard title="Published" value={String(published)} description="Posts published this month" />
-        <StatCard title="Connected Accounts" value={String(accounts)} description="Active platform connections" />
-        <StatCard title="AI Generations" value="0" description="Remaining this month" />
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <StatCard
+          title="Scheduled Posts"
+          value={String(scheduled)}
+          description="Posts ready to publish"
+          icon={Calendar}
+        />
+        <StatCard
+          title="Published"
+          value={String(published)}
+          description="Posts published this month"
+          icon={PenSquare}
+        />
+        <StatCard
+          title="Connected Accounts"
+          value={String(accounts)}
+          description="Active platform connections"
+          icon={LinkIcon}
+        />
+        <StatCard
+          title="AI Generations"
+          value="0"
+          description="Remaining this month"
+          icon={Sparkles}
+        />
       </div>
 
       {scheduled === 0 && published === 0 ? (
-        <div className="rounded-lg border bg-card p-8 text-center text-muted-foreground">
-          <p className="text-lg font-medium">No posts yet</p>
-          <p className="mt-1">
-            <Link href="/dashboard/posts/new" className="text-primary underline">
-              Create your first post
-            </Link>{" "}
-            to get started.
-          </p>
-        </div>
+        <Card className="border-dashed">
+          <CardHeader className="text-center pb-4">
+            <CardTitle className="text-xl">No posts yet</CardTitle>
+            <CardDescription className="text-base">
+              Create your first post to start scheduling content across your
+              social media platforms.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="flex justify-center pb-6">
+            <Button asChild size="lg">
+              <Link href="/dashboard/posts/new">
+                <PenSquare className="mr-2 size-4" />
+                Create your first post
+              </Link>
+            </Button>
+          </CardContent>
+        </Card>
       ) : null}
     </div>
   );
@@ -80,16 +117,23 @@ function StatCard({
   title,
   value,
   description,
+  icon: Icon,
 }: {
   title: string;
   value: string;
   description: string;
+  icon: React.ElementType;
 }) {
   return (
-    <div className="rounded-lg border bg-card p-4">
-      <p className="text-sm font-medium text-muted-foreground">{title}</p>
-      <p className="mt-1 text-3xl font-bold">{value}</p>
-      <p className="mt-1 text-xs text-muted-foreground">{description}</p>
-    </div>
+    <Card>
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+        <CardTitle className="text-sm font-medium">{title}</CardTitle>
+        <Icon className="size-4 text-muted-foreground" />
+      </CardHeader>
+      <CardContent>
+        <div className="text-2xl font-bold">{value}</div>
+        <p className="text-xs text-muted-foreground mt-1">{description}</p>
+      </CardContent>
+    </Card>
   );
 }

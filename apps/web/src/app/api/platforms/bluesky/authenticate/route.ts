@@ -46,6 +46,9 @@ export async function POST(request: NextRequest) {
       ? encryptToken(result.refreshToken, encryptionKey)
       : null;
 
+    // Bluesky access tokens expire after ~2 hours
+    const tokenExpiresAt = new Date(Date.now() + 2 * 60 * 60 * 1000);
+
     await db
       .insert(platformAccount)
       .values({
@@ -57,6 +60,7 @@ export async function POST(request: NextRequest) {
         platformAvatarUrl: result.platformAvatarUrl,
         accessTokenEnc,
         refreshTokenEnc,
+        tokenExpiresAt,
         isActive: true,
       })
       .onConflictDoUpdate({
@@ -67,6 +71,7 @@ export async function POST(request: NextRequest) {
           platformAvatarUrl: result.platformAvatarUrl,
           accessTokenEnc,
           refreshTokenEnc,
+          tokenExpiresAt,
           isActive: true,
           updatedAt: new Date(),
         },

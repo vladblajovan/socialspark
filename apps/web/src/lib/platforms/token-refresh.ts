@@ -15,7 +15,7 @@ export async function refreshExpiringTokens(): Promise<RefreshResult> {
   const db = getDb();
   const encryptionKey = process.env.ENCRYPTION_KEY!;
 
-  // Find active accounts with tokens expiring within 10 minutes
+  // Find active accounts with tokens expiring within 150 minutes (runs every 2h with overlap)
   const expiringAccounts = await db
     .select()
     .from(platformAccount)
@@ -23,7 +23,7 @@ export async function refreshExpiringTokens(): Promise<RefreshResult> {
       and(
         eq(platformAccount.isActive, true),
         sql`${platformAccount.tokenExpiresAt} IS NOT NULL`,
-        sql`${platformAccount.tokenExpiresAt} < NOW() + INTERVAL '10 minutes'`,
+        sql`${platformAccount.tokenExpiresAt} < NOW() + INTERVAL '150 minutes'`,
         sql`${platformAccount.refreshTokenEnc} IS NOT NULL`,
       ),
     );

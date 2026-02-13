@@ -39,11 +39,11 @@ export default function SignInPage() {
 
   return (
     <Card>
-      <CardHeader className="text-center">
-        <CardTitle className="text-2xl font-bold">Welcome back</CardTitle>
+      <CardHeader className="space-y-2 text-center">
+        <CardTitle className="text-2xl font-bold tracking-tight">Welcome back</CardTitle>
         <CardDescription>Sign in to your SocialSpark account</CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="pt-6">
         <SocialButtons />
 
         <div className="my-6 flex items-center gap-3">
@@ -94,7 +94,7 @@ export default function SignInPage() {
 
         <p className="mt-6 text-center text-sm text-muted-foreground">
           Don&apos;t have an account?{" "}
-          <Link href="/sign-up" className="text-primary underline-offset-4 hover:underline">
+          <Link href="/sign-up" className="font-medium text-primary underline-offset-4 hover:underline">
             Sign up
           </Link>
         </p>

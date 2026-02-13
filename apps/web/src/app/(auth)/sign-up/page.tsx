@@ -41,11 +41,11 @@ export default function SignUpPage() {
 
   return (
     <Card>
-      <CardHeader className="text-center">
-        <CardTitle className="text-2xl font-bold">Create your account</CardTitle>
+      <CardHeader className="space-y-2 text-center">
+        <CardTitle className="text-2xl font-bold tracking-tight">Create your account</CardTitle>
         <CardDescription>Start scheduling smarter with AI</CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="pt-6">
         <SocialButtons />
 
         <div className="my-6 flex items-center gap-3">
@@ -101,7 +101,7 @@ export default function SignUpPage() {
 
         <p className="mt-6 text-center text-sm text-muted-foreground">
           Already have an account?{" "}
-          <Link href="/sign-in" className="text-primary underline-offset-4 hover:underline">
+          <Link href="/sign-in" className="font-medium text-primary underline-offset-4 hover:underline">
             Sign in
           </Link>
         </p>

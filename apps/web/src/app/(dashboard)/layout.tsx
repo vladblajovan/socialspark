@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Sparkles } from "lucide-react";
+import { Zap } from "lucide-react";
 import { SidebarNav } from "@/components/dashboard/sidebar-nav";
 import { UserMenu } from "@/components/dashboard/user-menu";
 import { MobileNav } from "@/components/dashboard/mobile-nav";
@@ -16,8 +16,11 @@ export default function DashboardLayout({
       {/* Desktop sidebar */}
       <aside className="hidden md:flex md:w-60 md:flex-col border-r bg-sidebar">
         <div className="flex h-14 items-center gap-2 border-b px-4">
-          <Sparkles className="size-5 text-primary" />
-          <Link href="/dashboard" className="text-lg font-bold">
+          <Zap className="size-5 text-primary" />
+          <Link
+            href="/dashboard"
+            className="text-lg font-bold tracking-tight transition-colors hover:text-primary"
+          >
             SocialSpark
           </Link>
         </div>
@@ -29,7 +32,7 @@ export default function DashboardLayout({
       {/* Main content */}
       <div className="flex flex-1 flex-col overflow-hidden">
         {/* Header */}
-        <header className="flex h-14 items-center justify-between border-b bg-background px-4">
+        <header className="flex h-14 items-center justify-between border-b bg-background px-4 md:px-6">
           <div className="flex items-center gap-2">
             <MobileNav />
           </div>
@@ -37,7 +40,7 @@ export default function DashboardLayout({
         </header>
 
         {/* Page content */}
-        <main className="flex-1 overflow-y-auto p-6">{children}</main>
+        <main className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8">{children}</main>
       </div>
     </div>
   );

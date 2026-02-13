@@ -10,12 +10,14 @@ import { closeQueues } from "./queues";
 import { closeDeadLetterQueue } from "./workers/dead-letter";
 import { startSchedulerWorker } from "./workers/scheduler";
 import { startPublisherWorker } from "./workers/publisher";
+import { startTokenRefreshWorker } from "./workers/token-refresh";
 import { startHeartbeat, stopHeartbeat } from "./lib/heartbeat";
 import { logger } from "./lib/logger";
 import type { Worker } from "bullmq";
 
 let schedulerWorker: Worker | null = null;
 let publisherWorker: Worker | null = null;
+let tokenRefreshWorker: Worker | null = null;
 
 async function main() {
   // Validate environment
@@ -33,6 +35,7 @@ async function main() {
   // Start workers
   schedulerWorker = startSchedulerWorker();
   publisherWorker = startPublisherWorker();
+  tokenRefreshWorker = startTokenRefreshWorker();
 
   // Start heartbeat
   startHeartbeat();
@@ -51,6 +54,10 @@ async function shutdown() {
   if (publisherWorker) {
     await publisherWorker.close();
     publisherWorker = null;
+  }
+  if (tokenRefreshWorker) {
+    await tokenRefreshWorker.close();
+    tokenRefreshWorker = null;
   }
 
   await closeQueues();
