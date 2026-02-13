@@ -1,3 +1,4 @@
+import { cookies } from "next/headers";
 import Link from "next/link";
 import { CheckCircle2, Zap, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -110,23 +111,39 @@ const faqs = [
   },
 ];
 
-export default function PricingPage() {
+export default async function PricingPage() {
+  const cookieStore = await cookies();
+  const isLoggedIn =
+    cookieStore.get("better-auth.session_token") ||
+    cookieStore.get("__Secure-better-auth.session_token");
+
   return (
     <div className="flex min-h-screen flex-col">
       {/* Header */}
       <header className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
-          <Link href="/" className="flex items-center gap-2 font-bold text-xl">
+          <Link
+            href={isLoggedIn ? "/dashboard" : "/"}
+            className="flex items-center gap-2 font-bold text-xl"
+          >
             <Zap className="h-5 w-5 text-primary" />
             SocialSpark
           </Link>
           <nav className="flex items-center gap-3">
-            <Button variant="ghost" asChild>
-              <Link href="/sign-in">Sign In</Link>
-            </Button>
-            <Button asChild>
-              <Link href="/sign-up">Sign Up</Link>
-            </Button>
+            {isLoggedIn ? (
+              <Button asChild>
+                <Link href="/dashboard">Back to Dashboard</Link>
+              </Button>
+            ) : (
+              <>
+                <Button variant="ghost" asChild>
+                  <Link href="/sign-in">Sign In</Link>
+                </Button>
+                <Button asChild>
+                  <Link href="/sign-up">Sign Up</Link>
+                </Button>
+              </>
+            )}
           </nav>
         </div>
       </header>
@@ -181,8 +198,12 @@ export default function PricingPage() {
                   variant={tier.ctaVariant}
                   asChild
                 >
-                  <Link href="/sign-up">
-                    {tier.cta}
+                  <Link href={isLoggedIn ? "/dashboard/settings" : "/sign-up"}>
+                    {isLoggedIn
+                      ? tier.annualPrice === "Free"
+                        ? "Current Plan"
+                        : "Upgrade"
+                      : tier.cta}
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
                 </Button>
@@ -222,15 +243,17 @@ export default function PricingPage() {
       {/* CTA */}
       <section className="px-6 py-20 text-center">
         <h2 className="text-2xl font-bold tracking-tight">
-          Ready to get started?
+          {isLoggedIn ? "Ready to upgrade?" : "Ready to get started?"}
         </h2>
         <p className="mt-2 text-muted-foreground">
-          Create your free account today. No credit card required.
+          {isLoggedIn
+            ? "Unlock more accounts, unlimited posts, and advanced features."
+            : "Create your free account today. No credit card required."}
         </p>
         <div className="mt-8">
           <Button size="lg" asChild>
-            <Link href="/sign-up">
-              Create Free Account
+            <Link href={isLoggedIn ? "/dashboard/settings" : "/sign-up"}>
+              {isLoggedIn ? "Manage Subscription" : "Create Free Account"}
               <ArrowRight className="ml-2 h-4 w-4" />
             </Link>
           </Button>
