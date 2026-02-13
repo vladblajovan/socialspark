@@ -6,7 +6,7 @@ type SaveStatus = "idle" | "unsaved" | "saving" | "saved" | "error";
 
 interface AutoSaveOptions {
   debounceMs?: number;
-  onSave: () => Promise<void>;
+  onSave: () => Promise<unknown>;
 }
 
 export function useAutoSave({ debounceMs = 30_000, onSave }: AutoSaveOptions) {
